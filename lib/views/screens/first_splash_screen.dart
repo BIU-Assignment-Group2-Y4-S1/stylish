@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stylish_app/views/widget_tree.dart';
+import 'package:stylish_app/routes/app_routes.dart';
 
 class FirstSplashScreen extends StatelessWidget {
   const FirstSplashScreen({super.key});
@@ -8,8 +8,27 @@ class FirstSplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text("Splash 1")
+        child: Column(
+          children: [
+            SizedBox(height: 360),
+            _logo,
+            SizedBox(height: 300),
+            _startButton(context),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget get _logo {
+    return Image.asset("assets/images/logo.png");
+  }
+
+  Widget _startButton(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () =>
+          Navigator.of(context).pushReplacementNamed(AppRoute.widgetTree),
+      child: Text("Get Started"),
     );
   }
 }
