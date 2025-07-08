@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stylish_app/views/screens/first_splash_screen.dart';
+import 'package:stylish_app/views/screens/forgot_password_screen.dart';
 import 'package:stylish_app/views/screens/home_screen.dart';
 import 'package:stylish_app/views/screens/search_screen.dart';
 import 'package:stylish_app/views/screens/signin_screen.dart';
@@ -13,6 +14,7 @@ class AppRoute {
   static const String firstSplashScreen = "/firstSplashScreen";
   static const String signInScreen = "/signInScreen";
   static const String signUpScreen = "/signUpScreen";
+  static const String forgotPasswordScreen = "/forgotPasswordScreen";
 
   static final key = GlobalKey<NavigatorState>();
 
@@ -30,6 +32,8 @@ class AppRoute {
         return _buildRoute(routeSettings, SigninScreen());
       case signUpScreen:
         return _buildRoute(routeSettings, SignupScreen());
+      case forgotPasswordScreen:
+        return _buildRoute(routeSettings, ForgotPasswordScreen());
       default:
         return _buildRoute(
           routeSettings,

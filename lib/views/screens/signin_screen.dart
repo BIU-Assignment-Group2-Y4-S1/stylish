@@ -37,8 +37,8 @@ class SigninScreen extends StatelessWidget {
                 SizedBox(height: 20),
                 _password,
                 SizedBox(height: 10),
-                _forgetPassword,
-                SizedBox(height: 40),
+                _forgetPassword(context),
+                SizedBox(height: 30),
                 _buttonLogin,
                 SizedBox(height: 40),
                 _divided,
@@ -157,10 +157,17 @@ class SigninScreen extends StatelessWidget {
     );
   }
 
-  Widget get _forgetPassword {
+  Widget _forgetPassword(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
-      children: [Text("Forgot Password?", style: TextStyle(color: Colors.red))],
+      children: [
+        TextButton(
+          onPressed: () => Navigator.of(
+            context,
+          ).pushNamed(AppRoute.forgotPasswordScreen),
+          child: Text("Forgot Password?", style: TextStyle(color: Colors.red)),
+        ),
+      ],
     );
   }
 
