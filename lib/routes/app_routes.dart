@@ -11,7 +11,7 @@ class AppRoute {
   static const String searchScreen = "/searchScreen";
   static const String firstSplashScreen = "/firstSplashScreen";
   static const String signInScreen = "/signInScreen";
-
+  static const String secondSplashScreen = "/secondSplashScreen";
   static final key = GlobalKey<NavigatorState>();
 
   static Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
@@ -26,6 +26,8 @@ class AppRoute {
         return _buildRoute(routeSettings, FirstSplashScreen());
       case signInScreen:
         return _buildRoute(routeSettings, SigninScreen());
+      case secondSplashScreen:
+        return _buildRoute(routeSettings, SecondSplashScreen());
       default:
         return _buildRoute(
           routeSettings,
