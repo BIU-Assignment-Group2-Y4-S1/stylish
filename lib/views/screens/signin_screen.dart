@@ -7,7 +7,7 @@ class SigninScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _body,
+      body: _body(context),
       // Center(
       //   child: ElevatedButton(
       //     onPressed: () {
@@ -22,7 +22,7 @@ class SigninScreen extends StatelessWidget {
     );
   }
 
-  Widget get _body {
+  Widget _body(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
@@ -31,7 +31,6 @@ class SigninScreen extends StatelessWidget {
             child: Column(
               children: [
                 SizedBox(height: 20),
-
                 _welcomeText,
                 SizedBox(height: 30),
                 _email,
@@ -46,7 +45,7 @@ class SigninScreen extends StatelessWidget {
                 SizedBox(height: 40),
                 _socialLogin,
                 SizedBox(height: 30),
-                _signUp,
+                _signUp(context),
               ],
             ),
           ),
@@ -55,16 +54,21 @@ class SigninScreen extends StatelessWidget {
     );
   }
 
-  Widget get _signUp {
+  Widget _signUp(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text("Craete An Account"),
         TextButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).pushNamed(AppRoute.signUpScreen);
+          },
           style: TextButton.styleFrom(
             foregroundColor: Color(0xFFF83758),
-            textStyle: TextStyle(decoration: TextDecoration.underline),
+            textStyle: TextStyle(
+              decoration: TextDecoration.underline,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           child: Text("Sign Up", style: TextStyle(fontWeight: FontWeight.bold)),
         ),

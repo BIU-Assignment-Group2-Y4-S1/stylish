@@ -3,6 +3,7 @@ import 'package:stylish_app/views/screens/first_splash_screen.dart';
 import 'package:stylish_app/views/screens/home_screen.dart';
 import 'package:stylish_app/views/screens/search_screen.dart';
 import 'package:stylish_app/views/screens/signin_screen.dart';
+import 'package:stylish_app/views/screens/signup_screen.dart';
 import 'package:stylish_app/views/widget_tree.dart';
 
 class AppRoute {
@@ -11,6 +12,7 @@ class AppRoute {
   static const String searchScreen = "/searchScreen";
   static const String firstSplashScreen = "/firstSplashScreen";
   static const String signInScreen = "/signInScreen";
+  static const String signUpScreen = "/signUpScreen";
 
   static final key = GlobalKey<NavigatorState>();
 
@@ -26,6 +28,8 @@ class AppRoute {
         return _buildRoute(routeSettings, FirstSplashScreen());
       case signInScreen:
         return _buildRoute(routeSettings, SigninScreen());
+      case signUpScreen:
+        return _buildRoute(routeSettings, SignupScreen());
       default:
         return _buildRoute(
           routeSettings,
