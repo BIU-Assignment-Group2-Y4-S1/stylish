@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stylish_app/views/screens/wishlist_screen.dart';
 import 'package:stylish_app/views/widgets/bottomNavbar_widget.dart';
 import 'package:stylish_app/views/screens/home_screen.dart';
 import 'package:stylish_app/views/screens/search_screen.dart';
@@ -15,6 +16,7 @@ class _WidgetTreeState extends State<WidgetTree> {
 
   final List<Widget> _screen = [
     const HomeScreen(),
+    const WishlistScreen(),
     const SearchScreen(),
   ];
 
@@ -24,33 +26,30 @@ class _WidgetTreeState extends State<WidgetTree> {
     });
   }
 
- @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(
-      title: Text(_getAppBarTitle()),
-    ),
-    body: _screen[_selectedIndex],
-    bottomNavigationBar: BottomnavbarWidget(
-      selectedIndex: _selectedIndex,
-      onItemTapped: _onItemTapped,
-    ),
-  );
-}
-
-String _getAppBarTitle() {
-  switch (_selectedIndex) {
-    case 0:
-      return 'Home';
-    case 1:
-      return 'Wishlist';
-    case 3:
-      return 'Search';
-    case 4:
-      return 'Settings';
-    default:
-      return '';
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(_getAppBarTitle())),
+      body: _screen[_selectedIndex],
+      bottomNavigationBar: BottomnavbarWidget(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
+      ),
+    );
   }
-}
 
+  String _getAppBarTitle() {
+    switch (_selectedIndex) {
+      case 0:
+        return '';
+      case 1:
+        return 'Wishlist';
+      case 3:
+        return 'Search';
+      case 4:
+        return 'Settings';
+      default:
+        return '';
+    }
+  }
 }

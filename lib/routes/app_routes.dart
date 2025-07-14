@@ -3,11 +3,13 @@ import 'package:stylish_app/views/screens/first_splash_screen.dart';
 import 'package:stylish_app/views/screens/home_screen.dart';
 import 'package:stylish_app/views/screens/search_screen.dart';
 import 'package:stylish_app/views/screens/signin_screen.dart';
+import 'package:stylish_app/views/screens/wishlist_screen.dart';
 import 'package:stylish_app/views/widget_tree.dart';
 
 class AppRoute {
   static const String widgetTree = "/widgetTree";
   static const String homeScreen = "/homeScreen";
+  static const String wishListScreen = "/wishListScreen";
   static const String searchScreen = "/searchScreen";
   static const String firstSplashScreen = "/firstSplashScreen";
   static const String signInScreen = "/signInScreen";
@@ -20,6 +22,8 @@ class AppRoute {
         return _buildRoute(routeSettings, WidgetTree());
       case homeScreen:
         return _buildRoute(routeSettings, HomeScreen());
+      case wishListScreen:
+        return _buildRoute(routeSettings, WishlistScreen());
       case searchScreen:
         return _buildRoute(routeSettings, SearchScreen());
       case firstSplashScreen:
