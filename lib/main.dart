@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:stylish_app/routes/app_routes.dart';
 
 void main() {
+  
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const MyApp());
 }
 
