@@ -11,13 +11,32 @@ class SecondSplashScreen extends StatefulWidget {
 class _SecondSplashScreenState extends State<SecondSplashScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(), body: _body(context));
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        actions: [
+          TextButton(
+            onPressed: () {},
+            child: Text(
+              "Skip",
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: _body(context),
+    );
   }
 
   Widget _body(BuildContext context) {
     return Center(
       child: Container(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             SizedBox(height: 90),
             _banner,
