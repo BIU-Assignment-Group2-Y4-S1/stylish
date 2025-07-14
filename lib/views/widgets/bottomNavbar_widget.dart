@@ -17,8 +17,14 @@ class BottomnavbarWidget extends StatelessWidget {
       onDestinationSelected: onItemTapped,
       destinations: const [
         NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-        NavigationDestination(icon: Icon(Icons.favorite_border), label: 'Wishlist'),
-        NavigationDestination(icon: Icon(Icons.favorite_border), label: ''),
+        NavigationDestination(
+          icon: Icon(Icons.favorite_border),
+          label: 'Wishlist',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.shopping_cart_outlined),
+          label: 'Cart',
+        ),
         NavigationDestination(icon: Icon(Icons.search), label: 'Search'),
         NavigationDestination(icon: Icon(Icons.settings), label: 'Setting'),
       ],
