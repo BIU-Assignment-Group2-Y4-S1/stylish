@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:stylish_app/views/screens/first_splash_screen.dart';
 import 'package:stylish_app/views/screens/forgot_password_screen.dart';
+import 'package:stylish_app/views/screens/fourth_splash_screen.dart';
 import 'package:stylish_app/views/screens/home_screen.dart';
 import 'package:stylish_app/views/screens/search_screen.dart';
+import 'package:stylish_app/views/screens/second_splash_screen.dart';
 import 'package:stylish_app/views/screens/setting_screen.dart';
 import 'package:stylish_app/views/screens/signin_screen.dart';
 import 'package:stylish_app/views/screens/signup_screen.dart';
+import 'package:stylish_app/views/screens/third_splash_screen.dart';
 import 'package:stylish_app/views/widget_tree.dart';
 
 class AppRoute {
@@ -14,6 +17,9 @@ class AppRoute {
   static const String searchScreen = "/searchScreen";
   static const String firstSplashScreen = "/firstSplashScreen";
   static const String signInScreen = "/signInScreen";
+  static const String secondSplashScreen = "/secondSplashScreen";
+  static const String thirdSplashScreen = "/thirdSplashScreen";
+  static const String fourthSplashScreen = "/fourthSplashScreen";
   static const String signUpScreen = "/signUpScreen";
   static const String forgotPasswordScreen = "/forgotPasswordScreen";
   static const String settingScreen = "/settingScreen";
@@ -32,6 +38,12 @@ class AppRoute {
         return _buildRoute(routeSettings, FirstSplashScreen());
       case signInScreen:
         return _buildRoute(routeSettings, SigninScreen());
+      case secondSplashScreen:
+        return _buildRoute(routeSettings, SecondSplashScreen());
+      case thirdSplashScreen:
+        return _buildRoute(routeSettings, ThirdSplashScreen());
+       case fourthSplashScreen:
+        return _buildRoute(routeSettings, FourthSplashScreen());
       case signUpScreen:
         return _buildRoute(routeSettings, SignupScreen());
       case forgotPasswordScreen:

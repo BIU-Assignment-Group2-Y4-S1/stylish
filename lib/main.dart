@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Stylish App',
       onGenerateRoute: AppRoute.onGenerateRoute,
-      initialRoute: AppRoute.widgetTree,
+      initialRoute: AppRoute.firstSplashScreen,
       // navigatorKey: AppRoute.key,
       // home: HomeScreen(),
     );
