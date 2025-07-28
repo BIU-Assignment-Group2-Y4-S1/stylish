@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:stylish_app/views/widgets/bottomNavbar_widget.dart';
 
 class WishlistScreen extends StatefulWidget {
   const WishlistScreen({super.key});
@@ -9,6 +9,7 @@ class WishlistScreen extends StatefulWidget {
 }
 
 class _WishlistScreenState extends State<WishlistScreen> {
+  int selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,7 +63,48 @@ class _WishlistScreenState extends State<WishlistScreen> {
         ),
       ),
 
-      body: ListView(children: [_buildSearchBar(), _buildProductGrid()]),
+      body: ListView(
+        children: [
+          _buildSearchBar(), _buildContentText(), _buildProductGrid(),
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: ConstrainedBox(
+          //     constraints: BoxConstraints(
+          //       maxHeight:
+          //           MediaQuery.of(context).size.height * 2, // adjust as needed
+          //     ),
+          //     child: ProductGrid(),
+          //   ),
+          // ),
+        ],
+      ),
+      floatingActionButton: Transform.translate(
+        offset: Offset(0, 16), // Move down by 16 pixels (adjust as needed)
+        child: FloatingActionButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          backgroundColor: Colors.white,
+          elevation: 6,
+          child: Icon(
+            Icons.shopping_cart_outlined,
+            color: Colors.black,
+            size: 28,
+          ),
+          onPressed: () {
+            // Handle cart tap
+          },
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomnavbarWidget(
+        selectedIndex: selectedIndex,
+        onItemTapped: (index) {
+          setState(() {
+            selectedIndex = index;
+          });
+        },
+      ),
     );
   }
 
@@ -86,11 +128,108 @@ class _WishlistScreenState extends State<WishlistScreen> {
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide.none,
           ),
+
           filled: true,
           fillColor: Colors.white, // Optional: adds a subtle background
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          suffix: Icon(Icons.mic, color: Colors.grey),
         ),
       ),
+    );
+  }
+
+  Widget _buildContentText() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 12),
+          child: Text(
+            "52,082 + Items",
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+        ),
+        Row(
+          children: [
+            Material(
+              color:
+                  Colors.transparent, // Makes ripple visible on white container
+              child: InkWell(
+                onTap: () {
+                  // Handle the tap for the whole button
+                },
+                borderRadius: BorderRadius.circular(
+                  8,
+                ), // Match container radius
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.white, width: 1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "Sort",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 12,
+                          fontFamily: 'Poppins',
+                        ),
+                      ),
+                      SizedBox(width: 4),
+                      Icon(Icons.import_export, color: Colors.black, size: 16),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 8), // Space between Sort and Filter buttons
+            Material(
+              color:
+                  Colors.transparent, // Makes ripple visible on white container
+              child: InkWell(
+                onTap: () {
+                  // Handle the tap for the whole button
+                },
+                borderRadius: BorderRadius.circular(
+                  8,
+                ), // Match container radius
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.white, width: 1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "Filter",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 12,
+                          fontFamily: 'Poppins',
+                        ),
+                      ),
+                      SizedBox(width: 4),
+                      Icon(Icons.filter_list, color: Colors.black, size: 16),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 8),
+          ],
+        ),
+      ],
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 
 class BottomnavbarWidget extends StatelessWidget {
   final int selectedIndex;
@@ -15,40 +16,48 @@ class BottomnavbarWidget extends StatelessWidget {
     return NavigationBar(
       selectedIndex: selectedIndex,
       onDestinationSelected: onItemTapped,
+
       destinations: [
-        const NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
         const NavigationDestination(
-          icon: Icon(Icons.favorite_border),
+          icon: Icon(Iconsax.home_1, color: Colors.black),
+          label: 'Home',
+        ),
+        const NavigationDestination(
+          icon: Icon(Iconsax.heart, color: Colors.black),
           label: 'Wishlist',
         ),
-        NavigationDestination(
-          icon: Container(
-            decoration: BoxDecoration(
-              color: Colors.deepOrange,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.deepOrange.withOpacity(0.3),
-                  blurRadius: 8,
-                  offset: Offset(0, 4),
-                ),
-              ],
-            ),
-            padding: EdgeInsets.all(10),
-            child: Icon(
-              Icons.shopping_cart_outlined,
-              color: Colors.white,
-              size: 28,
-            ),
-          ),
-          label: '',
-        ),
-        const NavigationDestination(icon: Icon(Icons.search), label: 'Search'),
+        // float cart button
+        const NavigationDestination(icon: SizedBox.shrink(), label: ''),
         const NavigationDestination(
-          icon: Icon(Icons.settings),
+          icon: Icon(Iconsax.search_favorite_1, color: Colors.black),
+          label: 'Search',
+        ),
+        const NavigationDestination(
+          icon: Icon(Iconsax.setting, color: Colors.black),
           label: 'Setting',
         ),
       ],
     );
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return NavigationBar(
+  //     selectedIndex: selectedIndex,
+  //     onDestinationSelected: onItemTapped,
+  //     destinations: const [
+  //       NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+  //       NavigationDestination(
+  //         icon: Icon(Icons.favorite_border),
+  //         label: 'Wishlist',
+  //       ),
+  //       NavigationDestination(
+  //         icon: Icon(Icons.shopping_cart_outlined),
+  //         label: 'Cart',
+  //       ),
+  //       NavigationDestination(icon: Icon(Icons.search), label: 'Search'),
+  //       NavigationDestination(icon: Icon(Icons.settings), label: 'Setting'),
+  //     ],
+  //   );
+  // }
 }

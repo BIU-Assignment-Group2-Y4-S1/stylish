@@ -41,7 +41,7 @@ class _WidgetTreeState extends State<WidgetTree> {
   String _getAppBarTitle() {
     switch (_selectedIndex) {
       case 0:
-        return '';
+        return 'Home';
       case 1:
         return 'Wishlist';
       case 3:
