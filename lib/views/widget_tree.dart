@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:stylish_app/views/screens/shoppage_screen.dart';
+import 'package:stylish_app/views/screens/wishlist_screen.dart';
 import 'package:stylish_app/views/screens/setting_screen.dart';
 import 'package:stylish_app/views/widgets/bottomNavbar_widget.dart';
 import 'package:stylish_app/views/screens/home_screen.dart';
@@ -16,8 +18,8 @@ class _WidgetTreeState extends State<WidgetTree> {
 
   final List<Widget> _screen = [
     const HomeScreen(),
-    const SearchScreen(),
-    const SearchScreen(),
+    const WishlistScreen(),
+    const ShoppageScreen(),
     const SearchScreen(),
     const SettingScreen(),
   ];
@@ -31,15 +33,47 @@ class _WidgetTreeState extends State<WidgetTree> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          _getAppBarTitle(),
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        leading: Icon(Icons.arrow_back_ios_outlined),
-      ),
+      appBar: _selectedIndex == 0 || _selectedIndex == 1
+          ? null // 🔴 Disable AppBar on HomeScreen
+          : AppBar(
+              title: Text(
+                _getAppBarTitle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              centerTitle: true,
+              leading: Icon(Icons.arrow_back_ios_outlined),
+            ),
+      // appBar: AppBar(
+      //   title: Text(
+      //     _getAppBarTitle(),
+      //     style: TextStyle(fontWeight: FontWeight.bold),
+      //   ),
+      //   centerTitle: true,
+      //   leading: Icon(Icons.arrow_back_ios_outlined),
+      // ),
       body: _screen[_selectedIndex],
+      floatingActionButton: Transform.translate(
+        offset: Offset(0, 16), // Move down by 16 pixels (adjust as needed)
+        child: FloatingActionButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          backgroundColor: Colors.white,
+          elevation: 6,
+          child: Icon(
+            Icons.shopping_cart_outlined,
+            color: Colors.black,
+            size: 28,
+          ),
+          onPressed: () {
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => ShoppageScreen()),
+            // );
+          },
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomnavbarWidget(
         selectedIndex: _selectedIndex,
         onItemTapped: _onItemTapped,
@@ -56,7 +90,7 @@ class _WidgetTreeState extends State<WidgetTree> {
       case 2:
         return 'Cart';
       case 3:
-        return 'Setting';
+        return 'Search';
       case 4:
         return 'Setting';
       default:
