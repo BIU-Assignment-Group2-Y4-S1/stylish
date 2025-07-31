@@ -162,9 +162,8 @@ class SigninScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         TextButton(
-          onPressed: () => Navigator.of(
-            context,
-          ).pushNamed(AppRoute.forgotPasswordScreen),
+          onPressed: () =>
+              Navigator.of(context).pushNamed(AppRoute.forgotPasswordScreen),
           child: Text("Forgot Password?", style: TextStyle(color: Colors.red)),
         ),
       ],

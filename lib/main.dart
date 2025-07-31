@@ -1,4 +1,3 @@
-// main.dart
 import 'package:flutter/material.dart';
 import 'package:stylish_app/routes/app_routes.dart';
 
@@ -15,9 +14,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Stylish App',
       onGenerateRoute: AppRoute.onGenerateRoute,
-      initialRoute: AppRoute.widgetTree,
+      initialRoute: AppRoute.signInScreen,
       // navigatorKey: AppRoute.key,
-      // home: ShippingScreen(),
+      // home: NikeSneakersApp(),
     );
   }
 }
