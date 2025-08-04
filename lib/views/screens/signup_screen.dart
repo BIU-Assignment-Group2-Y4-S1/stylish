@@ -1,10 +1,27 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stylish_app/routes/app_routes.dart';
 
-class SignupScreen extends StatelessWidget {
+class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
 
   @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+
+  @override
+  bool _obsecurePassword = true;
+  bool _obsecureConfirmPassword = true;
+
+  bool _isValidEmail = false;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   Widget build(BuildContext context) {
     return Scaffold(body: _body(context));
   }
@@ -15,27 +32,30 @@ class SignupScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Container(
-            child: Column(
-              children: [
-                SizedBox(height: 20),
-                _welcomeText,
-                SizedBox(height: 30),
-                _email,
-                SizedBox(height: 20),
-                _password,
-                SizedBox(height: 10),
-                _confirmPassword,
-                SizedBox(height: 10),
-                _text,
-                SizedBox(height: 40),
-                _buttonRegister,
-                SizedBox(height: 40),
-                _divided,
-                SizedBox(height: 40),
-                _socialLogin,
-                SizedBox(height: 30),
-                _login(context),
-              ],
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  SizedBox(height: 20),
+                  _welcomeText,
+                  SizedBox(height: 30),
+                  _email,
+                  SizedBox(height: 20),
+                  _password,
+                  SizedBox(height: 10),
+                  _confirmPassword,
+                  SizedBox(height: 10),
+                  _text,
+                  SizedBox(height: 40),
+                  _buttonRegister,
+                  SizedBox(height: 40),
+                  _divided,
+                  SizedBox(height: 40),
+                  _socialLogin,
+                  SizedBox(height: 30),
+                  _login(context),
+                ],
+              ),
             ),
           ),
         ),
@@ -50,7 +70,7 @@ class SignupScreen extends StatelessWidget {
         Text("I Already Have an Account"),
         TextButton(
           onPressed: () {
-            Navigator.of(context).pushReplacementNamed(AppRoute.signInScreen);
+            Navigator.of(context).pop(AppRoute.signInScreen);
           },
           style: TextButton.styleFrom(
             foregroundColor: Color(0xFFF83758),
@@ -141,7 +161,11 @@ class SignupScreen extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       ),
 
-      onPressed: () {},
+      onPressed: () {
+        if (_formKey.currentState?.validate() == true) {
+          _registerFunc();
+        }
+      },
       child: Text(
         "Create Account",
         style: TextStyle(color: Colors.white, fontSize: 20),
@@ -162,11 +186,25 @@ class SignupScreen extends StatelessWidget {
 
   Widget get _confirmPassword {
     return TextFormField(
-      onChanged: (value) {},
+      controller: _confirmPasswordController,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "Please input your Confirm Password";
+        }
+        return null;
+      },
+      obscureText: _obsecureConfirmPassword,
       decoration: InputDecoration(
         labelText: "Confirm Password",
         prefixIcon: Icon(Icons.lock),
-        suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.visibility)),
+        suffixIcon: IconButton(
+          onPressed: () {
+            setState(() {
+              _obsecureConfirmPassword = !_obsecureConfirmPassword;
+            });
+          },
+          icon: Icon(_obsecureConfirmPassword ? Icons.visibility : Icons.visibility_off,),
+        ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
@@ -174,11 +212,25 @@ class SignupScreen extends StatelessWidget {
 
   Widget get _password {
     return TextFormField(
-      onChanged: (value) {},
+      controller: _passwordController,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "Please input your Password";
+        }
+        return null;
+      },
+      obscureText: _obsecurePassword,
       decoration: InputDecoration(
         labelText: "Password",
         prefixIcon: Icon(Icons.lock),
-        suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.visibility)),
+        suffixIcon: IconButton(
+          onPressed: () {
+            setState(() {
+              _obsecurePassword = !_obsecurePassword;
+            });
+          },
+          icon: Icon(_obsecurePassword ? Icons.visibility : Icons.visibility_off,),
+        ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
@@ -186,9 +238,25 @@ class SignupScreen extends StatelessWidget {
 
   Widget get _email {
     return TextFormField(
-      onChanged: (value) {},
+      controller: _emailController,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "Please input your email";
+        }
+        return null;
+      },
+      onChanged: (value) {
+        if (value.contains("@")) {
+          setState(() {
+            _isValidEmail = true;
+          });
+        }
+      },
       decoration: InputDecoration(
-        labelText: "Username or Email",
+        suffix: !_isValidEmail
+            ? Icon(Icons.check_circle_rounded)
+            : Icon(Icons.check_circle_rounded, color: Colors.green),
+        labelText: "Email",
         prefixIcon: Icon(Icons.person),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
@@ -204,5 +272,40 @@ class SignupScreen extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Future<void> _registerFunc() async {
+    // String fullName = _fullNameController.text;
+    String email = _emailController.text;
+    String password = _passwordController.text;
+    String confirmPassword = _confirmPasswordController.text;
+
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Passwords do not match. Please try again."),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return; // Stop the function from executing further
+    }
+
+    try {
+      await _auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((UserCredential user) {
+            Navigator.of(context).pushReplacementNamed(AppRoute.signInScreen);
+          })
+          .catchError((error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(error.toString()),
+                backgroundColor: Colors.red,
+              ),
+            );
+          });
+    } catch (error) {
+      print("Error: $error");
+    }
   }
 }

@@ -1,14 +1,27 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:stylish_app/views/screens/signin_screen.dart';
+
+import '../../routes/app_routes.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
-
   @override
   State<SettingScreen> createState() => _SettingScreenState();
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  String email_user = "Unknow@gmail.com";
+  String username = "Unknow";
+
   @override
+  void initState() {
+    super.initState();
+    _fetchEmail(); // Call the function to fetch the email when the widget initializes
+  }
+
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       // Use SingleChildScrollView for scrollability
@@ -34,15 +47,15 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   Widget get _userData {
-    return const Column(
+    return Column(
       children: [
         Text(
-          "User Example",
+          "$username",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
         ),
         SizedBox(height: 10),
         Text(
-          "User_Example@gmail.com",
+          "$email_user",
           style: TextStyle(fontSize: 18, color: Colors.grey),
         ),
       ],
@@ -77,8 +90,18 @@ class _SettingScreenState extends State<SettingScreen> {
           title: "Settings",
           onTap: () {},
         ),
-        _buildMenuItem(icon: Icons.logout, title: "Log out", onTap: () {}),
+        _buildMenuItem(icon: Icons.logout, title: "Log out", onTap: () {
+          _logoutFunc();
+        }),
       ],
+    );
+  }
+
+  Future<void> _logoutFunc() async{
+    await _auth.signOut();
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const SigninScreen()),
+          (Route<dynamic> route) => false, // This condition removes ALL routes
     );
   }
 
@@ -110,4 +133,33 @@ class _SettingScreenState extends State<SettingScreen> {
       ),
     );
   }
+
+  // Future<void> _fetchEmail() async{
+  //   String? email = await _auth.currentUser?.email;
+  //   if(email!=null){
+  //     setState(() {
+  //       email_user = email;
+  //     });
+  //   }
+  // }
+  Future<void> _fetchEmail() async {
+    String? email = _auth.currentUser?.email;
+
+    if (email != null) {
+      String newUsername = _getUsername(email); // Call the dedicated function
+
+      setState(() {
+        email_user = email;
+        username = newUsername;
+      });
+    }
+  }
+  String _getUsername(String email) {
+    final atIndex = email.indexOf('@');
+    if (atIndex != -1) {
+      return email.substring(0, atIndex);
+    }
+    return "User Example"; // Return a default value if '@' is not found
+  }
+
 }

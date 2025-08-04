@@ -1,25 +1,25 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stylish_app/routes/app_routes.dart';
 
-class SigninScreen extends StatelessWidget {
+class SigninScreen extends StatefulWidget {
   const SigninScreen({super.key});
 
   @override
+  State<SigninScreen> createState() => _SigninScreenState();
+}
+
+class _SigninScreenState extends State<SigninScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  @override
+  bool _obsecurePassword = true;
+  bool _isValidEmail = false;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _body(context),
-      // Center(
-      //   child: ElevatedButton(
-      //     onPressed: () {
-      //       Navigator.of(
-      //         context,
-      //       ).pushNamedAndRemoveUntil(AppRoute.widgetTree, (route) => false);
-      //       // Navigator.of(context).pushReplacementNamed(AppRoute.widgetTree);
-      //     },
-      //     child: Text("Go to Home"),
-      //   ),
-      // ),
-    );
+    return Scaffold(body: _body(context));
   }
 
   Widget _body(BuildContext context) {
@@ -28,25 +28,28 @@ class SigninScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Container(
-            child: Column(
-              children: [
-                SizedBox(height: 20),
-                _welcomeText,
-                SizedBox(height: 30),
-                _email,
-                SizedBox(height: 20),
-                _password,
-                SizedBox(height: 10),
-                _forgetPassword(context),
-                SizedBox(height: 30),
-                _buttonLogin,
-                SizedBox(height: 40),
-                _divided,
-                SizedBox(height: 40),
-                _socialLogin,
-                SizedBox(height: 30),
-                _signUp(context),
-              ],
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  SizedBox(height: 20),
+                  _welcomeText,
+                  SizedBox(height: 30),
+                  _email,
+                  SizedBox(height: 20),
+                  _password,
+                  SizedBox(height: 10),
+                  _forgetPassword(context),
+                  SizedBox(height: 30),
+                  _buttonLogin,
+                  SizedBox(height: 40),
+                  _divided,
+                  SizedBox(height: 40),
+                  _socialLogin,
+                  SizedBox(height: 30),
+                  _signUp(context),
+                ],
+              ),
             ),
           ),
         ),
@@ -152,7 +155,9 @@ class SigninScreen extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       ),
 
-      onPressed: () {},
+      onPressed: () {
+        _loginFunc();
+      },
       child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 20)),
     );
   }
@@ -172,11 +177,25 @@ class SigninScreen extends StatelessWidget {
 
   Widget get _password {
     return TextFormField(
-      onChanged: (value) {},
+      controller: _passwordController,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "Please input your Password";
+        }
+        return null;
+      },
+      obscureText: _obsecurePassword,
       decoration: InputDecoration(
         labelText: "Password",
         prefixIcon: Icon(Icons.lock),
-        suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.visibility)),
+        suffixIcon: IconButton(
+          onPressed: () {
+            setState(() {
+              _obsecurePassword = !_obsecurePassword;
+            });
+          },
+          icon: Icon(_obsecurePassword ? Icons.visibility : Icons.visibility_off,),
+        ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
@@ -184,9 +203,25 @@ class SigninScreen extends StatelessWidget {
 
   Widget get _email {
     return TextFormField(
-      onChanged: (value) {},
+      controller: _emailController,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "Please input your email";
+        }
+        return null;
+      },
+      onChanged: (value) {
+        if (value.contains("@")) {
+          setState(() {
+            _isValidEmail = true;
+          });
+        }
+      },
       decoration: InputDecoration(
-        labelText: "Username or Email",
+        suffix: !_isValidEmail
+            ? Icon(Icons.check_circle_rounded)
+            : Icon(Icons.check_circle_rounded, color: Colors.green),
+        labelText: "Email",
         prefixIcon: Icon(Icons.person),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
@@ -203,4 +238,95 @@ class SigninScreen extends StatelessWidget {
       ],
     );
   }
+
+  _loginFunc() async {
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      print('Login successful!'); // Add this line
+      Navigator.of(context).pushReplacementNamed(AppRoute.widgetTree);
+    } on FirebaseAuthException catch (e) {
+      print('Login failed with Firebase error: $e'); // Add this line
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message ?? 'An unknown error occurred.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } catch (e) {
+      print('Login failed with a general error: $e'); // Add this line
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('An unknown error occurred.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+  //   _loginFunc() async {
+  //     // String fullName = _fullNameController.text;
+  //     String email = _emailController.text;
+  //     String password = _passwordController.text;
+
+  //     try {
+  //       await _auth
+  //           .signInWithEmailAndPassword(email: email, password: password)
+  //           .then((UserCredential user) {
+  //             Navigator.of(context).pushReplacementNamed(AppRoute.widgetTree);
+  //           })
+  //           .catchError((error) {
+  //             ScaffoldMessenger.of(context).showSnackBar(
+  //               SnackBar(
+  //                 content: Text(error.toString()),
+  //                 backgroundColor: Colors.red,
+  //               ),
+  //             );
+  //           });
+  //     } catch (error) {
+
+  //     }
+
+  //     // if (_formKey.currentState?.validate() == true) {
+  //     //   if (email.isEmpty || password.isEmpty) {
+  //     //     showDialog(
+  //     //       context: context,
+  //     //       builder:
+  //     //           (context) => AlertDialog(
+  //     //             title: Icon(Icons.warning, color: Colors.red, size: 80),
+  //     //             content: Text("All fields are required."),
+  //     //           ),
+  //     //     );
+  //     //     return;
+  //     //   } else if (email == "Manang@admin.com" && password == "1111") {
+  //     //     UserSharePreference.saveUserData("email", email); // fixed typo
+  //     //     UserSharePreference.saveUserData("password", password);
+
+  //     //     Navigator.pushReplacement(
+  //     //       context,
+  //     //       MaterialPageRoute(builder: (context) => HomeScreen()),
+  //     //     );
+  //     //   } else {
+  //     //     showDialog(
+  //     //       context: context,
+  //     //       builder:
+  //     //           (context) => AlertDialog(
+  //     //             title: Icon(Icons.warning, color: Colors.red, size: 80),
+  //     //             content: Text("Invalid Email or Password."),
+  //     //           ),
+  //     //     );
+  //     //     return;
+  //     //   }
+  //     // } else {
+  //     //   showDialog(
+  //     //     context: context,
+  //     //     builder:
+  //     //         (context) => AlertDialog(
+  //     //           title: Icon(Icons.warning, color: Colors.red, size: 80),
+  //     //           content: Text("Please fill in all required fields."),
+  //     //         ),
+  //     //   );
+  //     // }
+  //   }
 }
