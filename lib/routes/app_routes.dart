@@ -7,6 +7,7 @@ import 'package:stylish_app/views/screens/home_screen.dart';
 import 'package:stylish_app/views/screens/search_screen.dart';
 import 'package:stylish_app/views/screens/second_splash_screen.dart';
 import 'package:stylish_app/views/screens/setting_screen.dart';
+import 'package:stylish_app/views/screens/shoppage_screen.dart';
 import 'package:stylish_app/views/screens/signin_screen.dart';
 import 'package:stylish_app/views/screens/wishlist_screen.dart';
 import 'package:stylish_app/views/screens/signup_screen.dart';
@@ -27,6 +28,8 @@ class AppRoute {
   static const String forgotPasswordScreen = "/forgotPasswordScreen";
   static const String settingScreen = "/settingScreen";
   static const String checkoutScreen = "/checkoutScreen";
+  static const String shopPageScreen = "/shopPageScreen";
+  static const String placeHolderScreen = "/placeHolderScreen";
 
   static final key = GlobalKey<NavigatorState>();
 
@@ -58,6 +61,10 @@ class AppRoute {
         return _buildRoute(routeSettings, SettingScreen());
       case checkoutScreen:
         return _buildRoute(routeSettings, CheckoutScreen());
+      case shopPageScreen:
+        return _buildRoute(routeSettings, ShoppageScreen());
+      case placeHolderScreen:
+        return _buildRoute(routeSettings, Placeholder());
       default:
         return _buildRoute(
           routeSettings,

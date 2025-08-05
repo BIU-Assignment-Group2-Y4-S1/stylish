@@ -39,7 +39,7 @@ class SigninScreen extends StatelessWidget {
                 SizedBox(height: 10),
                 _forgetPassword(context),
                 SizedBox(height: 30),
-                _buttonLogin,
+                _buttonLogin(context),
                 SizedBox(height: 40),
                 _divided,
                 SizedBox(height: 40),
@@ -144,7 +144,7 @@ class SigninScreen extends StatelessWidget {
     );
   }
 
-  Widget get _buttonLogin {
+  Widget _buttonLogin(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: Color(0xFFF83758),
@@ -152,7 +152,9 @@ class SigninScreen extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       ),
 
-      onPressed: () {},
+      onPressed: () {
+        Navigator.of(context).pushReplacementNamed(AppRoute.widgetTree);
+      },
       child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 20)),
     );
   }

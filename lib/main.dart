@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stylish_app/routes/app_routes.dart';
+import 'package:stylish_app/views/screens/shipping_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       onGenerateRoute: AppRoute.onGenerateRoute,
       initialRoute: AppRoute.signInScreen,
       // navigatorKey: AppRoute.key,
-      // home: NikeSneakersApp(),
+      // home: ShippingScreen(),
     );
   }
 }

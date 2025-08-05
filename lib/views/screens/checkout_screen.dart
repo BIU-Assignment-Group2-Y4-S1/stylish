@@ -44,22 +44,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ),
       ),
       body: Column(children: [_buildCheckout(), _buildPaymentOptions()]),
-      floatingActionButton: Transform.translate(
-        offset: Offset(0, 16),
-        child: FloatingActionButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-          backgroundColor: Colors.white,
-          elevation: 6,
-          child: Icon(
-            Icons.shopping_cart_outlined,
-            color: Colors.black,
-            size: 28,
-          ),
-          onPressed: () {},
-        ),
-      ),
     );
   }
 
