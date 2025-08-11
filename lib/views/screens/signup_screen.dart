@@ -1,10 +1,22 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stylish_app/routes/app_routes.dart';
 
-class SignupScreen extends StatelessWidget {
+class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
 
   @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  @override
+  bool _obsecurePassword = true;
+  bool _isValidEmail = false;
   Widget build(BuildContext context) {
     return Scaffold(body: _body(context));
   }
@@ -141,7 +153,9 @@ class SignupScreen extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       ),
 
-      onPressed: () {},
+      onPressed: () {
+        // if()
+      },
       child: Text(
         "Create Account",
         style: TextStyle(color: Colors.white, fontSize: 20),
@@ -166,7 +180,16 @@ class SignupScreen extends StatelessWidget {
       decoration: InputDecoration(
         labelText: "Confirm Password",
         prefixIcon: Icon(Icons.lock),
-        suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.visibility)),
+        suffixIcon: IconButton(
+          onPressed: () {
+            setState(() {
+              _obsecurePassword = !_obsecurePassword;
+            });
+          },
+          icon: Icon(
+            _obsecurePassword ? Icons.visibility : Icons.visibility_off,
+          ),
+        ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
@@ -174,11 +197,27 @@ class SignupScreen extends StatelessWidget {
 
   Widget get _password {
     return TextFormField(
-      onChanged: (value) {},
+      controller: _passwordController,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "Please input your Password";
+        }
+        return null;
+      },
+      obscureText: _obsecurePassword,
       decoration: InputDecoration(
         labelText: "Password",
         prefixIcon: Icon(Icons.lock),
-        suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.visibility)),
+        suffixIcon: IconButton(
+          onPressed: () {
+            setState(() {
+              _obsecurePassword = !_obsecurePassword;
+            });
+          },
+          icon: Icon(
+            _obsecurePassword ? Icons.visibility : Icons.visibility_off,
+          ),
+        ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
@@ -186,9 +225,25 @@ class SignupScreen extends StatelessWidget {
 
   Widget get _email {
     return TextFormField(
-      onChanged: (value) {},
+      controller: _emailController,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "Please fill in your Email";
+        }
+        return null;
+      },
+      onChanged: (value) {
+        if (value.contains("@")) {
+          setState(() {
+            _isValidEmail = true;
+          });
+        }
+      },
       decoration: InputDecoration(
-        labelText: "Username or Email",
+        labelText: "Email",
+        suffix: !_isValidEmail
+            ? Icon(Icons.check_circle_rounded)
+            : Icon(Icons.check_circle_rounded, color: Colors.green),
         prefixIcon: Icon(Icons.person),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
@@ -204,5 +259,22 @@ class SignupScreen extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Future<void> _registerFunc() async {
+    String email = _emailController.text;
+    String password = _passwordController.text;
+    try {
+      await _auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((UserCredential user) {
+            Navigator.of(context).pushReplacementNamed(AppRoute.signInScreen);
+          })
+          .catchError((error) {
+            print("Erorr: $error");
+          });
+    } catch (error) {
+      print("Erorr: $error");
+    }
   }
 }

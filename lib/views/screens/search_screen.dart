@@ -5,6 +5,6 @@ class SearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("Cart");
+    return Center(child: Text("Search screen"));
   }
 }
