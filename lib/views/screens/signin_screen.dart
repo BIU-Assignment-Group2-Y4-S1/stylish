@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:stylish_app/routes/app_routes.dart';
 
 class SigninScreen extends StatefulWidget {
@@ -10,13 +11,14 @@ class SigninScreen extends StatefulWidget {
 }
 
 class _SigninScreenState extends State<SigninScreen> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   @override
   bool _obsecurePassword = true;
   bool _isValidEmail = false;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   Widget build(BuildContext context) {
     return Scaffold(body: _body(context));
   }
@@ -113,7 +115,12 @@ class _SigninScreenState extends State<SigninScreen> {
             border: Border.all(color: Color(0xFFF83758), width: 1),
             borderRadius: BorderRadius.circular(100),
           ),
-          child: Image.asset("assets/images/fb.png"),
+          child: GestureDetector(
+            child: Image.asset("assets/images/fb.png"),
+            onTap: () {
+              _facebookSignin();
+            },
+          ),
         ),
       ],
     );
@@ -154,7 +161,9 @@ class _SigninScreenState extends State<SigninScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       ),
 
-      onPressed: () {},
+      onPressed: () {
+        _loginFunc();
+      },
       child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 20)),
     );
   }
@@ -185,16 +194,7 @@ class _SigninScreenState extends State<SigninScreen> {
       decoration: InputDecoration(
         labelText: "Password",
         prefixIcon: Icon(Icons.lock),
-        suffixIcon: IconButton(
-          onPressed: () {
-            setState(() {
-              _obsecurePassword = !_obsecurePassword;
-            });
-          },
-          icon: Icon(
-            _obsecurePassword ? Icons.visibility : Icons.visibility_off,
-          ),
-        ),
+        suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.visibility)),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
@@ -238,64 +238,46 @@ class _SigninScreenState extends State<SigninScreen> {
     );
   }
 
+  Future<void> _facebookSignin() async {
+    final LoginResult result = await FacebookAuth.instance.login();
+    if (result.status == LoginStatus.success) {
+      final OAuthCredential credential = FacebookAuthProvider.credential(
+        result.accessToken!.tokenString,
+      );
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      Navigator.of(context).pushReplacementNamed(AppRoute.widgetTree);
+    } else {
+      print(result.message);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("${result.message}")));
+    }
+  }
+
   _loginFunc() async {
-    // String fullName = _fullNameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
 
     try {
-      await _auth
-          .signInWithEmailAndPassword(email: email, password: password)
-          .then((UserCredential user) {
-            print("User: $user");
-            Navigator.of(context).pushReplacementNamed(AppRoute.widgetTree);
-          })
-          .catchError((eror) {
-            print("Incorrect");
-          });
-    } catch (error) {
-      print("Error: $error");
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      print('Login successful!'); // Add this line
+      Navigator.of(context).pushReplacementNamed(AppRoute.widgetTree);
+    } on FirebaseAuthException catch (e) {
+      print('Login failed with Firebase error: $e'); // Add this line
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message ?? 'An unknown error occurred.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } catch (e) {
+      print('Login failed with a general error: $e'); // Add this line
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('An unknown error occurred.'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
-
-    // if (_formKey.currentState?.validate() == true) {
-    //   if (email.isEmpty || password.isEmpty) {
-    //     showDialog(
-    //       context: context,
-    //       builder:
-    //           (context) => AlertDialog(
-    //             title: Icon(Icons.warning, color: Colors.red, size: 80),
-    //             content: Text("All fields are required."),
-    //           ),
-    //     );
-    //     return;
-    //   } else if (email == "Manang@admin.com" && password == "1111") {
-    //     // UserSharePreference.saveUserData("email", email); // fixed typo
-    //     // UserSharePreference.saveUserData("password", password);
-
-    //     Navigator.pushReplacement(
-    //       context,
-    //       MaterialPageRoute(builder: (context) => WidgetTree()),
-    //     );
-    //   } else {
-    //     showDialog(
-    //       context: context,
-    //       builder:
-    //           (context) => AlertDialog(
-    //             title: Icon(Icons.warning, color: Colors.red, size: 80),
-    //             content: Text("Invalid Email or Password."),
-    //           ),
-    //     );
-    //     return;
-    //   }
-    // } else {
-    //   showDialog(
-    //     context: context,
-    //     builder:
-    //         (context) => AlertDialog(
-    //           title: Icon(Icons.warning, color: Colors.red, size: 80),
-    //           content: Text("Please fill in all required fields."),
-    //         ),
-    //   );
-    // }
   }
 }

@@ -56,7 +56,7 @@ class _ThirdSplashScreenState extends State<ThirdSplashScreen> {
         TextButton(
           onPressed: () => Navigator.of(
             context,
-          ).pushReplacementNamed(AppRoute.secondSplashScreen),
+          ).pop(AppRoute.secondSplashScreen),
           child: Text(
             "Prev",
             style: TextStyle(
@@ -69,7 +69,7 @@ class _ThirdSplashScreenState extends State<ThirdSplashScreen> {
         TextButton(
           onPressed: () => Navigator.of(
             context,
-          ).pushReplacementNamed(AppRoute.fourthSplashScreen),
+          ).pushNamed(AppRoute.fourthSplashScreen),
           child: Text(
             "Next",
             style: TextStyle(

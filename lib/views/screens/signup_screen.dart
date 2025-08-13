@@ -10,13 +10,18 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+
   @override
   bool _obsecurePassword = true;
+  bool _obsecureConfirmPassword = true;
+
   bool _isValidEmail = false;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   Widget build(BuildContext context) {
     return Scaffold(body: _body(context));
   }
@@ -27,27 +32,30 @@ class _SignupScreenState extends State<SignupScreen> {
         child: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Container(
-            child: Column(
-              children: [
-                SizedBox(height: 20),
-                _welcomeText,
-                SizedBox(height: 30),
-                _email,
-                SizedBox(height: 20),
-                _password,
-                SizedBox(height: 10),
-                _confirmPassword,
-                SizedBox(height: 10),
-                _text,
-                SizedBox(height: 40),
-                _buttonRegister,
-                SizedBox(height: 40),
-                _divided,
-                SizedBox(height: 40),
-                _socialLogin,
-                SizedBox(height: 30),
-                _login(context),
-              ],
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  SizedBox(height: 20),
+                  _welcomeText,
+                  SizedBox(height: 30),
+                  _email,
+                  SizedBox(height: 20),
+                  _password,
+                  SizedBox(height: 10),
+                  _confirmPassword,
+                  SizedBox(height: 10),
+                  _text,
+                  SizedBox(height: 40),
+                  _buttonRegister,
+                  SizedBox(height: 40),
+                  _divided,
+                  SizedBox(height: 40),
+                  _socialLogin,
+                  SizedBox(height: 30),
+                  _login(context),
+                ],
+              ),
             ),
           ),
         ),
@@ -62,7 +70,7 @@ class _SignupScreenState extends State<SignupScreen> {
         Text("I Already Have an Account"),
         TextButton(
           onPressed: () {
-            Navigator.of(context).pushReplacementNamed(AppRoute.signInScreen);
+            Navigator.of(context).pop(AppRoute.signInScreen);
           },
           style: TextButton.styleFrom(
             foregroundColor: Color(0xFFF83758),
@@ -154,7 +162,9 @@ class _SignupScreenState extends State<SignupScreen> {
       ),
 
       onPressed: () {
-        // if()
+        if (_formKey.currentState?.validate() == true) {
+          _registerFunc();
+        }
       },
       child: Text(
         "Create Account",
@@ -176,19 +186,24 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Widget get _confirmPassword {
     return TextFormField(
-      onChanged: (value) {},
+      controller: _confirmPasswordController,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "Please input your Confirm Password";
+        }
+        return null;
+      },
+      obscureText: _obsecureConfirmPassword,
       decoration: InputDecoration(
         labelText: "Confirm Password",
         prefixIcon: Icon(Icons.lock),
         suffixIcon: IconButton(
           onPressed: () {
             setState(() {
-              _obsecurePassword = !_obsecurePassword;
+              _obsecureConfirmPassword = !_obsecureConfirmPassword;
             });
           },
-          icon: Icon(
-            _obsecurePassword ? Icons.visibility : Icons.visibility_off,
-          ),
+          icon: Icon(_obsecureConfirmPassword ? Icons.visibility : Icons.visibility_off,),
         ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
@@ -208,16 +223,7 @@ class _SignupScreenState extends State<SignupScreen> {
       decoration: InputDecoration(
         labelText: "Password",
         prefixIcon: Icon(Icons.lock),
-        suffixIcon: IconButton(
-          onPressed: () {
-            setState(() {
-              _obsecurePassword = !_obsecurePassword;
-            });
-          },
-          icon: Icon(
-            _obsecurePassword ? Icons.visibility : Icons.visibility_off,
-          ),
-        ),
+        suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.visibility)),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
@@ -228,7 +234,7 @@ class _SignupScreenState extends State<SignupScreen> {
       controller: _emailController,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return "Please fill in your Email";
+          return "Please input your email";
         }
         return null;
       },
@@ -240,10 +246,7 @@ class _SignupScreenState extends State<SignupScreen> {
         }
       },
       decoration: InputDecoration(
-        labelText: "Email",
-        suffix: !_isValidEmail
-            ? Icon(Icons.check_circle_rounded)
-            : Icon(Icons.check_circle_rounded, color: Colors.green),
+        labelText: "Username or Email",
         prefixIcon: Icon(Icons.person),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
@@ -260,10 +263,22 @@ class _SignupScreenState extends State<SignupScreen> {
       ],
     );
   }
-
   Future<void> _registerFunc() async {
+    // String fullName = _fullNameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
+    String confirmPassword = _confirmPasswordController.text;
+
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Passwords do not match. Please try again."),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return; // Stop the function from executing further
+    }
+
     try {
       await _auth
           .createUserWithEmailAndPassword(email: email, password: password)
@@ -271,10 +286,15 @@ class _SignupScreenState extends State<SignupScreen> {
             Navigator.of(context).pushReplacementNamed(AppRoute.signInScreen);
           })
           .catchError((error) {
-            print("Erorr: $error");
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(error.toString()),
+                backgroundColor: Colors.red,
+              ),
+            );
           });
     } catch (error) {
-      print("Erorr: $error");
+      print("Error: $error");
     }
   }
 }

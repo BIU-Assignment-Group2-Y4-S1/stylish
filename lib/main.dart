@@ -6,7 +6,6 @@ import 'package:stylish_app/routes/app_routes.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
   runApp(const MyApp());
 }
 

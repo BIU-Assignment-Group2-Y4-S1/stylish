@@ -27,7 +27,7 @@ class FirstSplashScreen extends StatelessWidget {
   Widget _startButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () =>
-          Navigator.of(context).pushReplacementNamed(AppRoute.secondSplashScreen),
+          Navigator.of(context).pushNamed(AppRoute.secondSplashScreen),
       child: Text("Get Started"),
     );
   }
