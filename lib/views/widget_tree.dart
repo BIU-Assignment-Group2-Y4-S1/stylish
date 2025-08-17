@@ -42,6 +42,7 @@ class _WidgetTreeState extends State<WidgetTree> {
               ),
               centerTitle: true,
               leading: Icon(Icons.arrow_back_ios_outlined),
+              
             ),
       body: _screen[_selectedIndex],
       bottomNavigationBar: BottomnavbarWidget(

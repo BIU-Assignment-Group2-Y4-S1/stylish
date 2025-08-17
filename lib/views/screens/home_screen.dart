@@ -65,28 +65,44 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
 
             // Profile Icon
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
+            SizedBox(
               child: GestureDetector(
-                onTap: () {
-                  // Handle profile tap
-                },
-                child: Container(
-                  padding: EdgeInsets.all(2), // Border width
-                  decoration: BoxDecoration(shape: BoxShape.circle),
-                  child: CircleAvatar(
-                    radius: 16,
-                    backgroundImage: NetworkImage(
-                      'https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D',
-                    ),
-                    // Replace with your URL
-                    backgroundColor: Colors.grey[200],
-                  ),
+                onTap: () { },
+                child: IconButton(
+                  onPressed: () {},
+                  icon: Icon(Icons.dark_mode),
                 ),
               ),
             ),
           ],
         ),
+        // actions: [
+        //     IconButton(
+        //       onPressed: () {
+        //         isDarkModeNotifier.value = !isDarkModeNotifier.value;
+        //       },
+        //       icon: ValueListenableBuilder(
+        //         valueListenable: isDarkModeNotifier,
+        //         builder: (context, isDarkMode, child) {
+        //           return Icon(
+        //             isDarkMode ? Icons.dark_mode : Icons.light_mode,
+        //           );
+        //         },
+        //       ),
+        //     ),
+        //     IconButton(onPressed: () {
+        //       Navigator.push(
+        //         context,
+        //         MaterialPageRoute(
+        //           builder: (context){
+        //             return SettingPage(
+        //               title: "Setting page",
+        //             );
+        //         },
+        //       ),
+        //       );
+        //     },
+        //   ],
       ),
 
       body: ListView(

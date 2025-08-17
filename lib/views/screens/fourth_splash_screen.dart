@@ -38,7 +38,7 @@ class _FourthSplashScreenState extends State<FourthSplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            SizedBox(height: 80),
+            SizedBox(height: 60),
             _banner,
             _text,
             SizedBox(height: 150),

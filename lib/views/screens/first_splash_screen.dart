@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:stylish_app/routes/app_routes.dart';
 
-class FirstSplashScreen extends StatelessWidget {
+class FirstSplashScreen extends StatefulWidget {
   const FirstSplashScreen({super.key});
+
+  @override
+  State<FirstSplashScreen> createState() => _FirstSplashScreenState();
+}
+
+class _FirstSplashScreenState extends State<FirstSplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Navigate after 2 seconds
+    Future.delayed(const Duration(seconds: 1), () {
+      Navigator.of(context).pushReplacementNamed(AppRoute.secondSplashScreen);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -10,10 +24,10 @@ class FirstSplashScreen extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            SizedBox(height: 360),
+            const SizedBox(height: 360),
             _logo,
-            SizedBox(height: 300),
-            _startButton(context),
+            const SizedBox(height: 300),
+            // _startButton(context),
           ],
         ),
       ),
@@ -26,9 +40,9 @@ class FirstSplashScreen extends StatelessWidget {
 
   Widget _startButton(BuildContext context) {
     return ElevatedButton(
-      onPressed: () =>
-          Navigator.of(context).pushNamed(AppRoute.secondSplashScreen),
-      child: Text("Get Started"),
+      onPressed: () => Navigator.of(context)
+          .pushReplacementNamed(AppRoute.secondSplashScreen),
+      child: const Text("Get Started"),
     );
   }
 }

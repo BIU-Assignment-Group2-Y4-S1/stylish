@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Stylish App',
       onGenerateRoute: AppRoute.onGenerateRoute,
-      initialRoute: AppRoute.signInScreen,
+      initialRoute: AppRoute.firstSplashScreen,
       // navigatorKey: AppRoute.key,
       // home: NikeSneakersApp(),
     );
