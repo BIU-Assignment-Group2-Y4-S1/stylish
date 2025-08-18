@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:stylish_app/routes/app_routes.dart';
 
 class FirstSplashScreen extends StatefulWidget {
@@ -12,10 +13,21 @@ class _FirstSplashScreenState extends State<FirstSplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Navigate after 2 seconds
+    // Check auth state and navigate after 1 second
     Future.delayed(const Duration(seconds: 1), () {
-      Navigator.of(context).pushReplacementNamed(AppRoute.secondSplashScreen);
+      _checkAuthState();
     });
+  }
+
+  Future<void> _checkAuthState() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // User is logged in, go to widgetTree
+      Navigator.of(context).pushReplacementNamed(AppRoute.widgetTree);
+    } else {
+      // User is not logged in, go to second splash screen
+      Navigator.of(context).pushReplacementNamed(AppRoute.secondSplashScreen);
+    }
   }
 
   @override
@@ -27,7 +39,6 @@ class _FirstSplashScreenState extends State<FirstSplashScreen> {
             const SizedBox(height: 360),
             _logo,
             const SizedBox(height: 300),
-            // _startButton(context),
           ],
         ),
       ),
@@ -36,13 +47,5 @@ class _FirstSplashScreenState extends State<FirstSplashScreen> {
 
   Widget get _logo {
     return Image.asset("assets/images/logo.png");
-  }
-
-  Widget _startButton(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () => Navigator.of(context)
-          .pushReplacementNamed(AppRoute.secondSplashScreen),
-      child: const Text("Get Started"),
-    );
   }
 }

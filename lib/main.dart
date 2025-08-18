@@ -1,12 +1,25 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:stylish_app/firebase_options.dart';
 import 'package:stylish_app/routes/app_routes.dart';
+import 'package:stylish_app/views/widgets/cart_provider.dart';
 
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+//   runApp(const MyApp());
+// }
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+  //runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => CartProvider())],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

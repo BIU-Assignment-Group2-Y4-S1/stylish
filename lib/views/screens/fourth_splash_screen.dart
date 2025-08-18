@@ -16,7 +16,9 @@ class _FourthSplashScreenState extends State<FourthSplashScreen> {
         automaticallyImplyLeading: false,
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pushReplacementNamed(AppRoute.signInScreen);
+            },
             child: Text(
               "Skip",
               style: TextStyle(
@@ -56,7 +58,7 @@ class _FourthSplashScreenState extends State<FourthSplashScreen> {
         TextButton(
           onPressed: () => Navigator.of(
             context,
-          ).pushReplacementNamed(AppRoute.secondSplashScreen),
+          ).pushReplacementNamed(AppRoute.thirdSplashScreen),
           child: Text(
             "Prev",
             style: TextStyle(

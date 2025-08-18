@@ -16,7 +16,9 @@ class _SecondSplashScreenState extends State<SecondSplashScreen> {
         automaticallyImplyLeading: false,
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pushReplacementNamed(AppRoute.signInScreen);
+            },
             child: Text(
               "Skip",
               style: TextStyle(

@@ -43,12 +43,15 @@ class _SigninScreenState extends State<SigninScreen> {
                   _forgetPassword(context),
                   SizedBox(height: 30),
                   _buttonLogin,
+
                   SizedBox(height: 40),
                   _divided,
                   SizedBox(height: 40),
                   _socialLogin,
                   SizedBox(height: 30),
                   _signUp(context),
+                  SizedBox(height: 30),
+                  _buttonLoginAsGuest,
                 ],
               ),
             ),
@@ -168,6 +171,24 @@ class _SigninScreenState extends State<SigninScreen> {
     );
   }
 
+  Widget get _buttonLoginAsGuest {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Color(0xFFF83758),
+        minimumSize: Size(double.infinity, 50),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+      ),
+
+      onPressed: () {
+        Navigator.of(context).pushReplacementNamed(AppRoute.widgetTree);
+      },
+      child: Text(
+        "Continue as Guest",
+        style: TextStyle(color: Colors.white, fontSize: 20),
+      ),
+    );
+  }
+
   Widget _forgetPassword(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -194,7 +215,16 @@ class _SigninScreenState extends State<SigninScreen> {
       decoration: InputDecoration(
         labelText: "Password",
         prefixIcon: Icon(Icons.lock),
-        suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.visibility)),
+        suffixIcon: IconButton(
+          onPressed: () {
+            setState(() {
+              _obsecurePassword = !_obsecurePassword;
+            });
+          },
+          icon: Icon(
+            _obsecurePassword ? Icons.visibility : Icons.visibility_off,
+          ),
+        ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
@@ -237,6 +267,10 @@ class _SigninScreenState extends State<SigninScreen> {
       ],
     );
   }
+
+  // Future<void> _googleSignin() async {
+  //   final user = await GoogleSignIn().signin();
+  // }
 
   Future<void> _facebookSignin() async {
     final LoginResult result = await FacebookAuth.instance.login();

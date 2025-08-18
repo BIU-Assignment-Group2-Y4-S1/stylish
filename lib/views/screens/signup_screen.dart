@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:stylish_app/routes/app_routes.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -13,7 +14,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   @override
   bool _obsecurePassword = true;
@@ -85,6 +87,22 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
+  Future<void> _facebookSignin() async {
+    final LoginResult result = await FacebookAuth.instance.login();
+    if (result.status == LoginStatus.success) {
+      final OAuthCredential credential = FacebookAuthProvider.credential(
+        result.accessToken!.tokenString,
+      );
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      Navigator.of(context).pushReplacementNamed(AppRoute.widgetTree);
+    } else {
+      print(result.message);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("${result.message}")));
+    }
+  }
+
   Widget get _socialLogin {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -120,7 +138,12 @@ class _SignupScreenState extends State<SignupScreen> {
             border: Border.all(color: Color(0xFFF83758), width: 1),
             borderRadius: BorderRadius.circular(100),
           ),
-          child: Image.asset("assets/images/fb.png"),
+          child: GestureDetector(
+            child: Image.asset("assets/images/fb.png"),
+            onTap: () {
+              _facebookSignin();
+            },
+          ),
         ),
       ],
     );
@@ -203,7 +226,9 @@ class _SignupScreenState extends State<SignupScreen> {
               _obsecureConfirmPassword = !_obsecureConfirmPassword;
             });
           },
-          icon: Icon(_obsecureConfirmPassword ? Icons.visibility : Icons.visibility_off,),
+          icon: Icon(
+            _obsecureConfirmPassword ? Icons.visibility : Icons.visibility_off,
+          ),
         ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
@@ -223,7 +248,16 @@ class _SignupScreenState extends State<SignupScreen> {
       decoration: InputDecoration(
         labelText: "Password",
         prefixIcon: Icon(Icons.lock),
-        suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.visibility)),
+        suffixIcon: IconButton(
+          onPressed: () {
+            setState(() {
+              _obsecurePassword = !_obsecurePassword;
+            });
+          },
+          icon: Icon(
+            _obsecurePassword ? Icons.visibility : Icons.visibility_off,
+          ),
+        ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
@@ -263,6 +297,7 @@ class _SignupScreenState extends State<SignupScreen> {
       ],
     );
   }
+
   Future<void> _registerFunc() async {
     // String fullName = _fullNameController.text;
     String email = _emailController.text;

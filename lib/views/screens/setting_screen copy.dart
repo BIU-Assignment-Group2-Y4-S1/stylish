@@ -1,27 +1,30 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:stylish_app/views/screens/signin_screen.dart';
 
+import '../../routes/app_routes.dart';
+
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
-
   @override
   State<SettingScreen> createState() => _SettingScreenState();
 }
 
 class _SettingScreenState extends State<SettingScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  String email_user = "Unknown@gmail.com";
-  String username = "Unknown";
+  String email_user = "Unknow@gmail.com";
+  String username = "Unknow";
 
   @override
   void initState() {
     super.initState();
-    _fetchUserData();
+    _fetchEmail(); // Call the function to fetch the email when the widget initializes
   }
 
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      // Use SingleChildScrollView for scrollability
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
@@ -36,6 +39,26 @@ class _SettingScreenState extends State<SettingScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget get _profile {
+    return const CircleAvatar(radius: 60, backgroundImage: AssetImage(''));
+  }
+
+  Widget get _userData {
+    return Column(
+      children: [
+        Text(
+          "$username",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+        ),
+        SizedBox(height: 10),
+        Text(
+          "$email_user",
+          style: TextStyle(fontSize: 18, color: Colors.grey),
+        ),
+      ],
     );
   }
 
@@ -67,14 +90,18 @@ class _SettingScreenState extends State<SettingScreen> {
           title: "Settings",
           onTap: () {},
         ),
-        _buildMenuItem(
-          icon: Icons.logout,
-          title: "Log out",
-          onTap: () {
-            _logoutFunc();
-          },
-        ),
+        _buildMenuItem(icon: Icons.logout, title: "Log out", onTap: () {
+          _logoutFunc();
+        }),
       ],
+    );
+  }
+
+  Future<void> _logoutFunc() async{
+    await _auth.signOut();
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const SigninScreen()),
+          (Route<dynamic> route) => false, // This condition removes ALL routes
     );
   }
 
@@ -107,80 +134,32 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 
-  Widget get _profile {
-    final user = _auth.currentUser;
+  // Future<void> _fetchEmail() async{
+  //   String? email = await _auth.currentUser?.email;
+  //   if(email!=null){
+  //     setState(() {
+  //       email_user = email;
+  //     });
+  //   }
+  // }
+  Future<void> _fetchEmail() async {
+    String? email = _auth.currentUser?.email;
 
-    return CircleAvatar(
-      radius: 60,
-      backgroundColor: Colors.grey[200],
-      backgroundImage: user?.photoURL != null
-          ? NetworkImage(user!.photoURL!) as ImageProvider
-          : const AssetImage('assets/images/user_default.png'),
-      child: user?.photoURL == null && user?.displayName != null
-          ? Text(
-              _getInitials(user!.displayName!),
-              style: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            )
-          : null,
-    );
-  }
+    if (email != null) {
+      String newUsername = _getUsername(email); // Call the dedicated function
 
-  String _getInitials(String name) {
-    return name
-        .split(' ')
-        .where((part) => part.isNotEmpty)
-        .take(2)
-        .map((name) => name[0].toUpperCase())
-        .join();
-  }
-
-  Widget get _userData {
-    return Column(
-      children: [
-        Text(
-          username,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          email_user,
-          style: const TextStyle(fontSize: 18, color: Colors.grey),
-        ),
-      ],
-    );
-  }
-
-  // ... [keep your existing _menuList, _buildMenuItem, _logoutFunc methods] ...
-
-  Future<void> _fetchUserData() async {
-    final user = _auth.currentUser;
-
-    if (user != null) {
       setState(() {
-        email_user = user.email ?? "Unknown@gmail.com";
-        username = user.displayName ?? _getUsername(user.email ?? "User");
+        email_user = email;
+        username = newUsername;
       });
     }
-    print('User photoURL: ${user?.photoURL}');
   }
-
   String _getUsername(String email) {
     final atIndex = email.indexOf('@');
     if (atIndex != -1) {
       return email.substring(0, atIndex);
     }
-    return "User";
+    return "User Example"; // Return a default value if '@' is not found
   }
 
-  Future<void> _logoutFunc() async {
-    await _auth.signOut();
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => const SigninScreen()),
-      (Route<dynamic> route) => false, // This condition removes ALL routes
-    );
-  }
 }
